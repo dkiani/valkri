@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valkri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #0A0A0A;
+      color: #FAFAFA;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    ::selection {
+      background: rgba(0, 240, 255, 0.15);
+      color: #FAFAFA;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #0A0A0A;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #222;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    
+    @keyframes shine {
+      0% { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+    
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes slowRotateReverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.08; }
+      50% { opacity: 0.15; }
+    }
+    
+    @keyframes fadeSatellite1 {
+      0%, 100% { opacity: 0.04; }
+      50% { opacity: 0.09; }
+    }
+    
+    @keyframes fadeSatellite2 {
+      0%, 100% { opacity: 0.03; }
+      50% { opacity: 0.07; }
+    }
+    
+    @keyframes fadeSatellite3 {
+      0%, 100% { opacity: 0.05; }
+      50% { opacity: 0.1; }
+    }
+    
+    .animate-float {
+      animation: float 2.5s ease-in-out infinite;
+    }
+    
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .fade-in-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Metallic gradient text */
+    .metallic-text {
+      background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.3) 0%,
+        rgba(255,255,255,0.9) 25%,
+        rgba(255,255,255,0.3) 50%,
+        rgba(255,255,255,0.9) 75%,
+        rgba(255,255,255,0.3) 100%
+      );
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shine 5s linear infinite;
+      filter: drop-shadow(0 0 40px rgba(120, 140, 255, 0.15))
+              drop-shadow(0 0 80px rgba(120, 140, 255, 0.08));
+    }
+    
+    /* Ambient spotlight behind headline */
+    .headline-container {
+      position: relative;
+      padding-bottom: 0.15em;
+    }
+    
+    .headline-spotlight {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, rgba(100, 120, 255, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* Stat flash animation */
+    @keyframes statFlash {
+      0% { text-shadow: 0 0 0 rgba(0, 240, 255, 0); }
+      50% { text-shadow: 0 0 30px rgba(0, 240, 255, 0.5), 0 0 60px rgba(0, 240, 255, 0.25); }
+      100% { text-shadow: 0 0 0 rgba(0, 240, 255, 0); }
+    }
+    
+    .stat-flash {
+      animation: statFlash 0.6s ease-out;
+    }
+    
+    /* Grain overlay */
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.035;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+    
+    /* Data ticker */
+    .data-ticker {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      z-index: 100;
+      padding: 8px 0;
+      background: linear-gradient(to bottom, rgba(10,10,10,0.8), transparent);
+      pointer-events: none;
+    }
+    
+    .ticker-content {
+      display: inline-block;
+      white-space: nowrap;
+      animation: ticker 40s linear infinite;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #333;
+      letter-spacing: 0.08em;
+    }
+    
+    /* Neural network canvas */
+    #neuralCanvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    /* Asymmetric HUD elements */
+    .hud-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+    
+    /* Left side cluster - rotating arcs */
+    .hud-left-cluster {
+      position: absolute;
+      left: 8%;
+      top: 32%;
+      width: 120px;
+      height: 120px;
+    }
+    
+    .arc-outer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0.5px solid rgba(140, 160, 220, 0.06);
+      border-radius: 50%;
+      border-bottom-color: transparent;
+      border-left-color: transparent;
+      animation: slowRotate 30s linear infinite;
+    }
+    
+    .arc-inner {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+      width: 50%;
+      height: 50%;
+      border: 0.5px solid rgba(140, 160, 220, 0.05);
+      border-radius: 50%;
+      border-top-color: transparent;
+      border-right-color: transparent;
+      animation: slowRotateReverse 20s linear infinite;
+    }
+    
+    .arc-center-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 2px;
+      height: 2px;
+      background: rgba(140, 160, 220, 0.1);
+      border-radius: 50%;
+      animation: pulseDot 4s ease-in-out infinite;
+    }
+    
+    .arc-label {
+      position: absolute;
+      top: 110%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px;
+      color: rgba(255, 255, 255, 0.05);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+    
+    /* Right side element - diagonal lines */
+    .hud-right-element {
+      position: absolute;
+      right: 12%;
+      top: 58%;
+    }
+    
+    .diagonal-line {
+      position: absolute;
+      width: 40px;
+      height: 0.5px;
+      background: rgba(140, 160, 220, 0.05);
+      transform-origin: left center;
+    }
+    
+    .diagonal-line:nth-child(1) {
+      transform: rotate(30deg);
+    }
+    
+    .diagonal-line:nth-child(2) {
+      transform: rotate(30deg) translateY(8px);
+    }
+    
+    .crosshair-mark {
+      position: absolute;
+      left: 50px;
+      top: 4px;
+      width: 8px;
+      height: 8px;
+    }
+    
+    .crosshair-mark::before,
+    .crosshair-mark::after {
+      content: '';
+      position: absolute;
+      background: rgba(140, 160, 220, 0.05);
+    }
+    
+    .crosshair-mark::before {
+      width: 8px;
+      height: 0.5px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+    
+    .crosshair-mark::after {
+      width: 0.5px;
+      height: 8px;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+    }
+    
+    .freq-label {
+      position: absolute;
+      left: 65px;
+      top: 2px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px;
+      color: rgba(140, 160, 220, 0.05);
+      letter-spacing: 0.1em;
+    }
+    
+    /* Top scattered dots - satellites */
+    .satellite-dot {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(140, 160, 220, 0.06);
+    }
+    
+    .satellite-dot:nth-child(1) {
+      width: 1px;
+      height: 1px;
+      left: 23%;
+      top: 18%;
+      animation: fadeSatellite1 8s ease-in-out infinite;
+    }
+    
+    .satellite-dot:nth-child(2) {
+      width: 1.5px;
+      height: 1.5px;
+      left: 67%;
+      top: 12%;
+      animation: fadeSatellite2 12s ease-in-out infinite;
+    }
+    
+    .satellite-dot:nth-child(3) {
+      width: 2px;
+      height: 2px;
+      left: 45%;
+      top: 22%;
+      animation: fadeSatellite3 15s ease-in-out infinite;
+    }
+    
+    /* Bottom-right value bracket */
+    .hud-value-bracket {
+      position: absolute;
+      right: 20%;
+      bottom: 18%;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: rgba(140, 160, 220, 0.06);
+      letter-spacing: 0.08em;
+    }
+    
+    /* Diagonal trajectory line */
+    .trajectory-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 35%;
+      height: 0.5px;
+      background: rgba(140, 160, 220, 0.03);
+      transform-origin: left bottom;
+      transform: rotate(-15deg);
+    }
+    
+    /* HUD top-right - coordinates */
+    .hud-top-right {
+      position: absolute;
+      top: 40px;
+      right: 24px;
+      text-align: right;
+      z-index: 10;
+    }
+    
+    .hud-coords {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.08);
+      letter-spacing: 0.1em;
+      line-height: 1.6;
+    }
+    
+    /* HUD bottom-left - telemetry */
+    .hud-bottom-left {
+      position: absolute;
+      bottom: 40px;
+      left: 24px;
+      z-index: 10;
+    }
+    
+    .hud-telemetry {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.08);
+      letter-spacing: 0.1em;
+      line-height: 1.6;
+    }
+    
+    /* Section divider lines */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+    }
+    
+    /* Monospace labels */
+    .mono-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 400;
+    }
+    
+    /* Glitch effect for section reveals */
+    @keyframes glitch {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-3px); }
+      40% { transform: translateX(3px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+      100% { transform: translateX(0); }
+    }
+    
+    .glitch-reveal {
+      animation: glitch 0.1s ease-out;
+    }
+    
+    /* Boot sequence overlay */
+    .boot-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: #050507;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 15vw;
+      opacity: 1;
+      transition: opacity 0.8s ease-out;
+    }
+    
+    .boot-overlay.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .boot-content {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .boot-scramble {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 9px;
+      line-height: 1.6;
+      color: rgba(50, 200, 120, 0.15);
+      text-align: center;
+      white-space: pre;
+      opacity: 0;
+      animation: scrambleIn 0.1s ease-out forwards, scrambleOut 0.3s ease-out 0.7s forwards;
+    }
+    
+    @keyframes scrambleIn {
+      to { opacity: 1; }
+    }
+    
+    @keyframes scrambleOut {
+      to { opacity: 0; }
+    }
+    
+    .boot-scanline {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: rgba(50, 200, 120, 0.4);
+      transform: translateY(-50%);
+      animation: scanLineDraw 0.5s ease-out 0.2s forwards, scanLineFade 0.3s ease-out 0.8s forwards;
+    }
+    
+    @keyframes scanLineDraw {
+      to { width: 100%; }
+    }
+    
+    @keyframes scanLineFade {
+      to { opacity: 0; }
+    }
+    
+    .boot-line {
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: bootLineIn 0.3s ease-out forwards;
+    }
+    
+    .boot-line:nth-child(1) { animation-delay: 1.0s; }
+    .boot-line:nth-child(2) { animation-delay: 1.3s; }
+    .boot-line:nth-child(3) { animation-delay: 1.6s; }
+    .boot-line:nth-child(4) { animation-delay: 1.9s; }
+    .boot-line:nth-child(5) { animation-delay: 2.2s; }
+    
+    .boot-ok {
+      color: rgba(50, 200, 120, 0.5);
+    }
+    
+    .boot-text {
+      color: #222;
+    }
+    
+    .boot-progress {
+      margin-top: 16px;
+      font-size: 10px;
+      color: rgba(50, 200, 120, 0.3);
+      opacity: 0;
+      animation: bootProgressIn 0.5s ease-out 2.5s forwards;
+    }
+    
+    .progress-bar {
+      display: inline-block;
+      width: 0;
+      overflow: hidden;
+      vertical-align: bottom;
+      animation: progressFill 0.4s ease-out 2.6s forwards;
+    }
+    
+    @keyframes progressFill {
+      to { width: 200px; }
+    }
+    
+    @keyframes bootProgressIn {
+      to { opacity: 1; }
+    }
+    
+    .boot-brand {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: #FAFAFA;
+      margin-top: 32px;
+      opacity: 0;
+      animation: bootBrandIn 0.6s ease-out 3.1s forwards;
+    }
+    
+    .boot-brand-char {
+      display: inline-block;
+      opacity: 0;
+      animation: charReveal 0.08s ease-out forwards;
+    }
+    
+    .boot-brand-char:nth-child(1) { animation-delay: 3.0s; }
+    .boot-brand-char:nth-child(2) { animation-delay: 3.08s; }
+    .boot-brand-char:nth-child(3) { animation-delay: 3.16s; }
+    .boot-brand-char:nth-child(4) { animation-delay: 3.24s; }
+    .boot-brand-char:nth-child(5) { animation-delay: 3.32s; }
+    .boot-brand-char:nth-child(6) { animation-delay: 3.4s; }
+    
+    @keyframes charReveal {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .boot-cursor {
+      display: inline-block;
+      width: 24px;
+      height: 48px;
+      background: rgba(50, 200, 120, 0.5);
+      margin-left: 6px;
+      vertical-align: bottom;
+      animation: blink-cursor 1.1s step-end infinite;
+      animation-delay: 3.5s;
+      opacity: 0;
+    }
+    
+    @keyframes blink-cursor {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    .boot-status {
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: #2a2a2a;
+      margin-top: 16px;
+      opacity: 0;
+      animation: bootStatusIn 0.5s ease-out 3.7s forwards;
+    }
+    
+    @keyframes bootLineIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes bootBrandIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes bootStatusIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    body.boot-active {
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="boot-active">
+  <!-- Film grain overlay -->
+  <div class="grain-overlay"></div>
+  
+  <!-- Boot sequence overlay -->
+  <div class="boot-overlay" id="bootOverlay">
+    <div class="boot-scramble" id="bootScramble"></div>
+    <div class="boot-scanline"></div>
+    
+    <div class="boot-content" id="bootContent" style="opacity: 0; animation: scrambleIn 0.1s ease-out 0.9s forwards;">
+      <div class="boot-line">
+        <span class="boot-ok">[OK]</span> <span class="boot-text">neural_engine loaded</span>
+      </div>
+      <div class="boot-line">
+        <span class="boot-ok">[OK]</span> <span class="boot-text">market_feed connected</span>
+      </div>
+      <div class="boot-line">
+        <span class="boot-ok">[OK]</span> <span class="boot-text">risk_matrix calibrated</span>
+      </div>
+      <div class="boot-line">
+        <span class="boot-ok">[OK]</span> <span class="boot-text">alpha_model initialized</span>
+      </div>
+      <div class="boot-line">
+        <span class="boot-ok">[OK]</span> <span class="boot-text">execution_layer armed</span>
+      </div>
+      
+      <div class="boot-progress">
+        [<span class="progress-bar">████████████████████</span>] 100%
+      </div>
+      
+      <div class="boot-brand">
+        <span class="boot-brand-char">V</span><span class="boot-brand-char">A</span><span class="boot-brand-char">L</span><span class="boot-brand-char">K</span><span class="boot-brand-char">R</span><span class="boot-brand-char">I</span><span class="boot-cursor"></span>
+      </div>
+      <div class="boot-status">READY ▸ all systems operational</div>
+    </div>
+  </div>
+  
+  <!-- Data ticker -->
+  <div class="data-ticker">
+    <div class="ticker-content">
+      ▸ WIN_RATE :: 91.7% ▸ SHARPE_30D :: 4.87 ▸ SORTINO :: 1.62 ▸ EXEC_LAT :: 0.074ms ▸ SIG_0x4A2F :: 0.9847 ▸ ALPHA_DRIFT :: +0.034 ▸ VOL_SURFACE :: 0.8472 ▸ MAX_DD :: -4.2% ▸ BETA_ADJ :: -0.018 ▸ CORR_MATRIX :: 0.7234 ▸ WIN_RATE :: 91.7% ▸ SHARPE_30D :: 4.87 ▸ SORTINO :: 1.62 ▸ EXEC_LAT :: 0.074ms ▸ SIG_0x8B1C :: 0.9123 ▸ ALPHA_DRIFT :: +0.041 ▸ VOL_SURFACE :: 0.8234 ▸ MAX_DD :: -3.8% ▸ BETA_ADJ :: -0.012 ▸ CORR_MATRIX :: 0.6987
+    </div>
+  </div>
+  
+  <main>
+    <!-- Hero Section -->
+    <section id="hero" style="position: relative; height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: #06070a;">
+      <!-- Neural network canvas -->
+      <canvas id="neuralCanvas"></canvas>
+      
+      <!-- Asymmetric HUD elements -->
+      <div class="hud-container">
+        <!-- Left side cluster - rotating arcs -->
+        <div class="hud-left-cluster">
+          <div class="arc-outer"></div>
+          <div class="arc-inner"></div>
+          <div class="arc-center-dot"></div>
+          <div class="arc-label">NODE_7A :: ACTIVE</div>
+        </div>
+        
+        <!-- Right side element - diagonal lines -->
+        <div class="hud-right-element">
+          <div class="diagonal-line"></div>
+          <div class="diagonal-line"></div>
+          <div class="crosshair-mark"></div>
+          <div class="freq-label">FREQ 0.847</div>
+        </div>
+        
+        <!-- Top scattered dots - satellites -->
+        <div class="satellite-dot"></div>
+        <div class="satellite-dot"></div>
+        <div class="satellite-dot"></div>
+        
+        <!-- Bottom-right value bracket -->
+        <div class="hud-value-bracket" id="valueBracket">⟨ 0.9847 ⟩</div>
+        
+        <!-- Diagonal trajectory line -->
+        <div class="trajectory-line"></div>
+      </div>
+      
+      <!-- HUD top-right - coordinates -->
+      <div class="hud-top-right">
+        <div class="hud-coords">LAT 40.7128° | LONG -74.0060°</div>
+        <div class="hud-coords" id="hudClock">00:00:00</div>
+      </div>
+      
+      <!-- HUD bottom-left - telemetry -->
+      <div class="hud-bottom-left">
+        <div class="hud-telemetry">SYS: ACTIVE | THREADS: 2,048 | LATENCY: 0.074ms</div>
+      </div>
+      
+      <!-- Main content -->
+      <div style="position: relative; z-index: 10; text-align: center; padding: 0 24px;">
+        <div class="headline-container">
+          <div class="headline-spotlight"></div>
+          <h1 id="heroTitle" class="metallic-text" style="font-size: clamp(48px, 13vw, 120px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; opacity: 0; transform: scale(0.95); transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);">
+            Algorithmic Dominance
+          </h1>
+        </div>
+        <p id="heroSubtitle" style="margin-top: 40px; font-size: clamp(14px, 1.5vw, 16px); color: #555; font-weight: 300; letter-spacing: 0.02em; opacity: 0; transform: translateY(20px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;">
+          AI-native quantitative strategies for institutional capital
+        </p>
+      </div>
+      
+      <div id="scrollIndicator" style="position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 1s;">
+        <span style="font-size: 10px; color: #333; text-transform: uppercase; letter-spacing: 0.25em;">Scroll</span>
+        <div style="width: 1px; height: 40px; background: #222; position: relative; overflow: hidden;">
+          <div class="animate-float" style="position: absolute; top: 0; left: 0; width: 100%; height: 33%; background: #00F0FF;"></div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Section divider -->
+    <div class="section-divider"></div>
+    
+    <!-- Thesis Section -->
+    <section id="thesis" class="glitch-section" style="min-height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; padding: 128px 24px;">
+      <div style="text-align: center;">
+        <p class="thesis-line fade-in-up" style="font-size: clamp(24px, 4vw, 52px); font-weight: 500; color: #FAFAFA; letter-spacing: -0.02em; line-height: 1.4; margin-bottom: 24px;">
+          AI-native trading infrastructure.
+        </p>
+        <p class="thesis-line fade-in-up" style="font-size: clamp(24px, 4vw, 52px); font-weight: 500; color: #FAFAFA; letter-spacing: -0.02em; line-height: 1.4; margin-bottom: 24px; transition-delay: 0.12s;">
+          Proprietary algorithms. Institutional execution.
+        </p>
+        <p class="thesis-line fade-in-up" style="font-size: clamp(24px, 4vw, 52px); font-weight: 500; color: #FAFAFA; letter-spacing: -0.02em; line-height: 1.4; transition-delay: 0.24s;">
+          Built by engineers who trade.
+        </p>
+      </div>
+    </section>
+    
+    <!-- Section divider -->
+    <div class="section-divider"></div>
+    
+    <!-- Numbers Section -->
+    <section id="numbers" class="glitch-section" style="min-height: 100vh; width: 100%; display: flex; items-center; justify-content: center; padding: 128px 24px;">
+      <div style="width: 100%; max-width: 1200px;">
+        <div class="stats-container" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 80px;">
+          <div class="stat-item fade-in-up" style="text-align: center;">
+            <div class="stat-value" data-value="91.7" data-suffix="%" style="font-size: clamp(56px, 8vw, 96px); font-weight: 600; color: #FAFAFA; letter-spacing: -0.03em;">0%</div>
+            <div class="mono-label" style="margin-top: 16px; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.15em;">Win Rate</div>
+          </div>
+          <div class="stat-item fade-in-up" style="text-align: center; transition-delay: 0.15s;">
+            <div class="stat-value" data-value="4.87" data-suffix="" style="font-size: clamp(56px, 8vw, 96px); font-weight: 600; color: #FAFAFA; letter-spacing: -0.03em;">0</div>
+            <div class="mono-label" style="margin-top: 16px; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.15em;">Sharpe (30D)</div>
+          </div>
+          <div class="stat-item fade-in-up" style="text-align: center; transition-delay: 0.3s;">
+            <div class="stat-value" data-value="0.074" data-suffix="ms" style="font-size: clamp(56px, 8vw, 96px); font-weight: 600; color: #FAFAFA; letter-spacing: -0.03em;">0ms</div>
+            <div class="mono-label" style="margin-top: 16px; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.15em;">Avg Execution</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Section divider -->
+    <div class="section-divider"></div>
+    
+    <!-- About Section -->
+    <section id="about" class="glitch-section" style="min-height: 50vh; width: 100%; display: flex; align-items: center; justify-content: center; padding: 128px 24px;">
+      <div class="fade-in-up" style="max-width: 520px; text-align: center;">
+        <p style="font-size: clamp(15px, 1.8vw, 17px); color: #555; font-weight: 300; line-height: 1.7;">
+          Valkri is an AI-first quantitative fund built by traders and technologists who believe markets are a solvable problem. Our algorithms don't predict — they adapt.
+        </p>
+        <p class="mono-label" style="margin-top: 24px; font-size: 11px; color: #444; letter-spacing: 0.1em;">
+          $483M VOLUME TRADED
+        </p>
+      </div>
+    </section>
+    
+    <!-- Section divider -->
+    <div class="section-divider"></div>
+    
+    <!-- Footer -->
+    <footer style="width: 100%; padding: 40px 24px;">
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-size: 14px; color: #FAFAFA; font-weight: 500; letter-spacing: -0.01em;">Valkri</span>
+        <div style="display: flex; align-items: center; gap: 32px;">
+          <a href="mailto:hello@valkri.ai" style="font-size: 11px; color: #444; text-decoration: none; transition: color 0.3s;">hello@valkri.ai</a>
+          <span class="mono-label" style="font-size: 10px; color: #333;">© 2026</span>
+        </div>
+      </div>
+    </footer>
+  </main>
+  
+  <script>
+    // Boot sequence scramble text generation
+    const scrambleChars = '0123456789ABCDEF';
+    const bootScramble = document.getElementById('bootScramble');
+    let scrambleText = '';
+    for (let i = 0; i < 5; i++) {
+      let line = '';
+      for (let j = 0; j < 40; j++) {
+        line += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+      }
+      scrambleText += line + '\n';
+    }
+    bootScramble.textContent = scrambleText;
+    
+    // Neural network visualization - sparse, dim
+    const neuralCanvas = document.getElementById('neuralCanvas');
+    const neuralCtx = neuralCanvas.getContext('2d');
+    
+    let neuralNodes = [];
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    function resizeNeural() {
+      neuralCanvas.width = window.innerWidth;
+      neuralCanvas.height = window.innerHeight;
+      initNeuralNodes();
+    }
+    
+    function initNeuralNodes() {
+      neuralNodes = [];
+      const isMobile = window.innerWidth < 768;
+      const nodeCount = isMobile ? 12 : 25;
+      
+      for (let i = 0; i < nodeCount; i++) {
+        neuralNodes.push({
+          x: Math.random() * neuralCanvas.width,
+          y: Math.random() * neuralCanvas.height,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: (Math.random() - 0.5) * 0.15,
+          radius: Math.random() * 0.6 + 0.6,
+          baseOpacity: 0.06,
+          activeOpacity: 0.18
+        });
+      }
+    }
+    
+    function drawNeural() {
+      neuralCtx.clearRect(0, 0, neuralCanvas.width, neuralCanvas.height);
+      
+      for (let i = 0; i < neuralNodes.length; i++) {
+        const nodeA = neuralNodes[i];
+        
+        for (let j = i + 1; j < neuralNodes.length; j++) {
+          const nodeB = neuralNodes[j];
+          const dx = nodeA.x - nodeB.x;
+          const dy = nodeA.y - nodeB.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 150) {
+            const baseOpacity = 0.03 * (1 - dist / 150);
+            
+            const mouseDistA = Math.sqrt((mouseX - nodeA.x) ** 2 + (mouseY - nodeA.y) ** 2);
+            const mouseDistB = Math.sqrt((mouseX - nodeB.x) ** 2 + (mouseY - nodeB.y) ** 2);
+            const isNearMouse = mouseDistA < 200 || mouseDistB < 200;
+            
+            const opacity = isNearMouse ? Math.min(baseOpacity * 2.5, 0.08) : baseOpacity;
+            
+            neuralCtx.beginPath();
+            neuralCtx.moveTo(nodeA.x, nodeA.y);
+            neuralCtx.lineTo(nodeB.x, nodeB.y);
+            neuralCtx.strokeStyle = `rgba(140, 160, 220, ${opacity})`;
+            neuralCtx.lineWidth = 0.5;
+            neuralCtx.stroke();
+          }
+        }
+      }
+      
+      for (const node of neuralNodes) {
+        const mouseDist = Math.sqrt((mouseX - node.x) ** 2 + (mouseY - node.y) ** 2);
+        const isNearMouse = mouseDist < 200;
+        
+        const opacity = isNearMouse ? node.activeOpacity : node.baseOpacity;
+        
+        neuralCtx.beginPath();
+        neuralCtx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        neuralCtx.fillStyle = `rgba(140, 160, 220, ${opacity})`;
+        neuralCtx.fill();
+        
+        node.x += node.vx;
+        node.y += node.vy;
+        
+        if (node.x < -10) node.x = neuralCanvas.width + 10;
+        if (node.x > neuralCanvas.width + 10) node.x = -10;
+        if (node.y < -10) node.y = neuralCanvas.height + 10;
+        if (node.y > neuralCanvas.height + 10) node.y = -10;
+      }
+      
+      requestAnimationFrame(drawNeural);
+    }
+    
+    resizeNeural();
+    drawNeural();
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    // HUD clock
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('hudClock').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+    
+    // Value bracket updater
+    function updateValueBracket() {
+      const value = (0.95 + Math.random() * 0.05).toFixed(4);
+      document.getElementById('valueBracket').textContent = `⟨ ${value} ⟩`;
+    }
+    setInterval(updateValueBracket, 2000);
+    
+    // Hero entrance animations (delayed for boot sequence)
+    setTimeout(() => {
+      document.getElementById('heroTitle').style.opacity = '1';
+      document.getElementById('heroTitle').style.transform = 'scale(1)';
+    }, 4150);
+    
+    setTimeout(() => {
+      document.getElementById('heroSubtitle').style.opacity = '1';
+      document.getElementById('heroSubtitle').style.transform = 'translateY(0)';
+    }, 4650);
+    
+    setTimeout(() => {
+      document.getElementById('scrollIndicator').style.opacity = '1';
+    }, 5000);
+    
+    // Responsive stats layout
+    function updateStatsLayout() {
+      const container = document.querySelector('.stats-container');
+      if (window.innerWidth >= 768) {
+        container.style.flexDirection = 'row';
+      } else {
+        container.style.flexDirection = 'column';
+      }
+    }
+    updateStatsLayout();
+    window.addEventListener('resize', () => {
+      resizeNeural();
+      updateStatsLayout();
+    });
+    
+    // Intersection Observer for scroll animations with glitch
+    const observerOptions = {
+      threshold: 0.25,
+      rootMargin: '0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('glitch-reveal');
+          setTimeout(() => {
+            entry.target.classList.remove('glitch-reveal');
+          }, 100);
+          
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, 50);
+          
+          if (entry.target.classList.contains('stat-item')) {
+            const valueEl = entry.target.querySelector('.stat-value');
+            const targetValue = parseFloat(valueEl.dataset.value);
+            const suffix = valueEl.dataset.suffix;
+            const duration = 2200;
+            const steps = 70;
+            const increment = targetValue / steps;
+            let current = 0;
+            
+            const counter = setInterval(() => {
+              current += increment;
+              
+              if (current >= targetValue) {
+                valueEl.textContent = targetValue + suffix;
+                valueEl.classList.add('stat-flash');
+                setTimeout(() => {
+                  valueEl.classList.remove('stat-flash');
+                }, 600);
+                clearInterval(counter);
+              } else {
+                const decimals = targetValue % 1 !== 0 ? 1 : 0;
+                valueEl.textContent = current.toFixed(decimals) + suffix;
+              }
+            }, duration / steps);
+          }
+          
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+      observer.observe(el);
+    });
+    
+    // Boot sequence fade-out
+    setTimeout(() => {
+      const bootOverlay = document.getElementById('bootOverlay');
+      bootOverlay.classList.add('fade-out');
+      document.body.classList.remove('boot-active');
+      
+      setTimeout(() => {
+        bootOverlay.remove();
+      }, 800);
+    }, 4200);
+  </script>
+</body>
+</html>
