@@ -1238,22 +1238,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       margin: 0;
     }
 
+    @keyframes btnPulse {
+      0%, 100% { border-color: rgba(0, 240, 255, 0.3); box-shadow: 0 0 8px rgba(0, 240, 255, 0.05); }
+      50% { border-color: rgba(0, 240, 255, 0.6); box-shadow: 0 0 16px rgba(0, 240, 255, 0.15); }
+    }
+
     .pattern-start-btn {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 0.2em;
-      color: rgba(0, 240, 255, 0.3);
-      background: transparent;
-      border: 1px solid rgba(0, 240, 255, 0.1);
-      padding: 12px 32px;
+      color: rgba(0, 240, 255, 0.8);
+      background: rgba(0, 240, 255, 0.06);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      padding: 14px 40px;
       cursor: none;
-      transition: border-color 0.3s, color 0.3s;
+      transition: border-color 0.3s, color 0.3s, background 0.3s, box-shadow 0.3s;
       text-transform: uppercase;
+      animation: btnPulse 2s ease-in-out infinite;
     }
 
     .pattern-start-btn:hover {
-      border-color: rgba(0, 240, 255, 0.3);
-      color: rgba(0, 240, 255, 0.5);
+      border-color: rgba(0, 240, 255, 0.7);
+      color: rgba(0, 240, 255, 1);
+      background: rgba(0, 240, 255, 0.1);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+      animation: none;
     }
 
     .pattern-start-btn:disabled {
