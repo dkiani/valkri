@@ -662,6 +662,151 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     body.boot-active {
       overflow: hidden;
     }
+
+    /* Custom crosshair cursor */
+    body {
+      cursor: none;
+    }
+
+    .cursor-crosshair {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      mix-blend-mode: screen;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+    }
+
+    .cursor-ring.active {
+      width: 20px;
+      height: 20px;
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+
+    .cursor-dot {
+      position: fixed;
+      width: 3px;
+      height: 3px;
+      background: rgba(0, 240, 255, 0.7);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 6px rgba(0, 240, 255, 0.4), 0 0 20px rgba(0, 240, 255, 0.15);
+    }
+
+    .cursor-line-h, .cursor-line-v {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9997;
+      background: rgba(0, 240, 255, 0.04);
+    }
+
+    .cursor-line-h {
+      width: 40px;
+      height: 1px;
+      transform: translateY(-50%);
+    }
+
+    .cursor-line-v {
+      width: 1px;
+      height: 40px;
+      transform: translateX(-50%);
+    }
+
+    /* Scanning sweep line */
+    .scan-sweep {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.08), rgba(0, 240, 255, 0.15), rgba(0, 240, 255, 0.08), transparent);
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0;
+    }
+
+    .scan-sweep.active {
+      opacity: 1;
+      transition: none;
+    }
+
+    /* Click pulse ripple */
+    .click-pulse {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9997;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      animation: clickRipple 0.6s ease-out forwards;
+    }
+
+    @keyframes clickRipple {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+      100% {
+        width: 120px;
+        height: 120px;
+        opacity: 0;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    /* Ambient background pulse */
+    @keyframes ambientPulse {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 60vw;
+      height: 60vh;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse at center, rgba(100, 120, 255, 0.02) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: ambientPulse 8s ease-in-out infinite;
+    }
+
+    /* Mouse-following glow */
+    .mouse-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.03) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      transform: translate(-50%, -50%);
+      transition: left 0.3s ease-out, top 0.3s ease-out;
+    }
+
+    /* Enhanced HUD coordinate tracking */
+    .hud-mouse-coords {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: rgba(0, 240, 255, 0.12);
+      letter-spacing: 0.1em;
+      line-height: 1.6;
+      transition: color 0.3s;
+    }
   </style>
 </head>
 <body class="boot-active">
@@ -670,6 +815,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MDD3V7DJ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+  <!-- Custom cursor -->
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-line-h" id="cursorLineH"></div>
+  <div class="cursor-line-v" id="cursorLineV"></div>
+
+  <!-- Scanning sweep line -->
+  <div class="scan-sweep" id="scanSweep"></div>
+
+  <!-- Ambient background glow -->
+  <div class="ambient-glow"></div>
+  <div class="mouse-glow" id="mouseGlow"></div>
+
   <!-- Film grain overlay -->
   <div class="grain-overlay"></div>
   
@@ -751,13 +909,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       
       <!-- HUD top-right - coordinates -->
       <div class="hud-top-right">
-        <div class="hud-coords">LAT 40.7128° | LONG -74.0060°</div>
+        <div class="hud-mouse-coords" id="hudMouseCoords">X 0000 | Y 0000</div>
         <div class="hud-coords" id="hudClock">00:00:00</div>
+        <div class="hud-coords" id="hudStatus">TRACKING ▸ ACTIVE</div>
       </div>
       
       <!-- HUD bottom-left - telemetry -->
       <div class="hud-bottom-left">
-        <div class="hud-telemetry">SYS: ACTIVE | THREADS: 2,048 | LATENCY: 0.074ms</div>
+        <div class="hud-telemetry" id="hudTelemetry">SYS: ACTIVE | THREADS: 2,048 | LATENCY: 0.074ms</div>
+        <div class="hud-telemetry" id="hudTelemetry2">SIGNALS: 847 | QUEUE: 0 | DRIFT: +0.034</div>
       </div>
       
       <!-- Main content -->
@@ -865,102 +1025,239 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       scrambleText += line + '\n';
     }
     bootScramble.textContent = scrambleText;
-    
-    // Neural network visualization - sparse, dim
-    const neuralCanvas = document.getElementById('neuralCanvas');
-    const neuralCtx = neuralCanvas.getContext('2d');
-    
-    let neuralNodes = [];
+
+    // ─── CUSTOM CURSOR ───
+    const cursorRing = document.getElementById('cursorRing');
+    const cursorDot = document.getElementById('cursorDot');
+    const cursorLineH = document.getElementById('cursorLineH');
+    const cursorLineV = document.getElementById('cursorLineV');
+    const mouseGlow = document.getElementById('mouseGlow');
+
     let mouseX = 0;
     let mouseY = 0;
-    
+    let cursorX = 0;
+    let cursorY = 0;
+
+    function updateCursor() {
+      // Smooth lag on ring, instant on dot
+      cursorX += (mouseX - cursorX) * 0.15;
+      cursorY += (mouseY - cursorY) * 0.15;
+
+      cursorRing.style.left = cursorX + 'px';
+      cursorRing.style.top = cursorY + 'px';
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+
+      // Crosshair lines
+      cursorLineH.style.left = (mouseX - 20) + 'px';
+      cursorLineH.style.top = mouseY + 'px';
+      cursorLineV.style.left = mouseX + 'px';
+      cursorLineV.style.top = (mouseY - 20) + 'px';
+
+      // Mouse glow follows with more lag
+      mouseGlow.style.left = cursorX + 'px';
+      mouseGlow.style.top = cursorY + 'px';
+
+      requestAnimationFrame(updateCursor);
+    }
+    updateCursor();
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      // Update HUD mouse coordinates
+      const hudCoords = document.getElementById('hudMouseCoords');
+      if (hudCoords) {
+        hudCoords.textContent = `X ${String(Math.round(e.clientX)).padStart(4, '0')} | Y ${String(Math.round(e.clientY)).padStart(4, '0')}`;
+      }
+    });
+
+    // Cursor ring shrink on click
+    document.addEventListener('mousedown', () => cursorRing.classList.add('active'));
+    document.addEventListener('mouseup', () => cursorRing.classList.remove('active'));
+
+    // ─── CLICK PULSE RIPPLE ───
+    document.addEventListener('click', (e) => {
+      const pulse = document.createElement('div');
+      pulse.className = 'click-pulse';
+      pulse.style.left = e.clientX + 'px';
+      pulse.style.top = e.clientY + 'px';
+      document.body.appendChild(pulse);
+      setTimeout(() => pulse.remove(), 600);
+    });
+
+    // ─── SCANNING SWEEP LINE ───
+    const scanSweep = document.getElementById('scanSweep');
+    function triggerScan() {
+      const duration = 2000;
+      const startTime = performance.now();
+      scanSweep.classList.add('active');
+
+      function animateScan(now) {
+        const progress = (now - startTime) / duration;
+        if (progress >= 1) {
+          scanSweep.classList.remove('active');
+          scanSweep.style.top = '0';
+          // Random interval between scans (6-14 seconds)
+          setTimeout(triggerScan, 6000 + Math.random() * 8000);
+          return;
+        }
+        scanSweep.style.top = (progress * 100) + 'vh';
+        requestAnimationFrame(animateScan);
+      }
+      requestAnimationFrame(animateScan);
+    }
+    // Start first scan after boot
+    setTimeout(triggerScan, 5500);
+
+    // ─── NEURAL NETWORK VISUALIZATION — SUPERCHARGED ───
+    const neuralCanvas = document.getElementById('neuralCanvas');
+    const neuralCtx = neuralCanvas.getContext('2d');
+    let neuralNodes = [];
+
     function resizeNeural() {
       neuralCanvas.width = window.innerWidth;
       neuralCanvas.height = window.innerHeight;
       initNeuralNodes();
     }
-    
+
     function initNeuralNodes() {
       neuralNodes = [];
       const isMobile = window.innerWidth < 768;
-      const nodeCount = isMobile ? 12 : 25;
-      
+      const nodeCount = isMobile ? 20 : 50;
+
       for (let i = 0; i < nodeCount; i++) {
         neuralNodes.push({
           x: Math.random() * neuralCanvas.width,
           y: Math.random() * neuralCanvas.height,
-          vx: (Math.random() - 0.5) * 0.15,
-          vy: (Math.random() - 0.5) * 0.15,
-          radius: Math.random() * 0.6 + 0.6,
-          baseOpacity: 0.06,
-          activeOpacity: 0.18
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          radius: Math.random() * 0.8 + 0.5,
+          baseOpacity: 0.05,
+          activeOpacity: 0.3
         });
       }
     }
-    
+
     function drawNeural() {
       neuralCtx.clearRect(0, 0, neuralCanvas.width, neuralCanvas.height);
-      
+
+      // Draw connections
       for (let i = 0; i < neuralNodes.length; i++) {
         const nodeA = neuralNodes[i];
-        
         for (let j = i + 1; j < neuralNodes.length; j++) {
           const nodeB = neuralNodes[j];
           const dx = nodeA.x - nodeB.x;
           const dy = nodeA.y - nodeB.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          
-          if (dist < 150) {
-            const baseOpacity = 0.03 * (1 - dist / 150);
-            
+
+          if (dist < 180) {
+            const baseOpacity = 0.03 * (1 - dist / 180);
             const mouseDistA = Math.sqrt((mouseX - nodeA.x) ** 2 + (mouseY - nodeA.y) ** 2);
             const mouseDistB = Math.sqrt((mouseX - nodeB.x) ** 2 + (mouseY - nodeB.y) ** 2);
-            const isNearMouse = mouseDistA < 200 || mouseDistB < 200;
-            
-            const opacity = isNearMouse ? Math.min(baseOpacity * 2.5, 0.08) : baseOpacity;
-            
+            const nearestMouse = Math.min(mouseDistA, mouseDistB);
+
+            let opacity = baseOpacity;
+            let color = '140, 160, 220';
+            if (nearestMouse < 250) {
+              const proximity = 1 - nearestMouse / 250;
+              opacity = baseOpacity + proximity * 0.12;
+              // Shift toward cyan when near cursor
+              color = `${140 - proximity * 140}, ${160 + proximity * 80}, ${220 + proximity * 35}`;
+            }
+
             neuralCtx.beginPath();
             neuralCtx.moveTo(nodeA.x, nodeA.y);
             neuralCtx.lineTo(nodeB.x, nodeB.y);
-            neuralCtx.strokeStyle = `rgba(140, 160, 220, ${opacity})`;
+            neuralCtx.strokeStyle = `rgba(${color}, ${opacity})`;
             neuralCtx.lineWidth = 0.5;
             neuralCtx.stroke();
           }
         }
       }
-      
+
+      // Draw nodes + apply cursor gravity
       for (const node of neuralNodes) {
-        const mouseDist = Math.sqrt((mouseX - node.x) ** 2 + (mouseY - node.y) ** 2);
-        const isNearMouse = mouseDist < 200;
-        
-        const opacity = isNearMouse ? node.activeOpacity : node.baseOpacity;
-        
+        const dxMouse = mouseX - node.x;
+        const dyMouse = mouseY - node.y;
+        const mouseDist = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+
+        // Gravitational pull toward cursor
+        if (mouseDist < 300 && mouseDist > 1) {
+          const force = 0.15 * (1 - mouseDist / 300);
+          node.vx += (dxMouse / mouseDist) * force;
+          node.vy += (dyMouse / mouseDist) * force;
+        }
+
+        // Dampen velocity
+        node.vx *= 0.99;
+        node.vy *= 0.99;
+
+        // Cap speed
+        const speed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
+        if (speed > 1.5) {
+          node.vx = (node.vx / speed) * 1.5;
+          node.vy = (node.vy / speed) * 1.5;
+        }
+
+        const isNearMouse = mouseDist < 250;
+        const proximity = isNearMouse ? 1 - mouseDist / 250 : 0;
+        const opacity = node.baseOpacity + proximity * (node.activeOpacity - node.baseOpacity);
+        const drawRadius = node.radius + proximity * 1.2;
+
         neuralCtx.beginPath();
-        neuralCtx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        neuralCtx.fillStyle = `rgba(140, 160, 220, ${opacity})`;
+        neuralCtx.arc(node.x, node.y, drawRadius, 0, Math.PI * 2);
+
+        if (proximity > 0.3) {
+          neuralCtx.fillStyle = `rgba(0, 240, 255, ${opacity})`;
+          neuralCtx.shadowBlur = 8;
+          neuralCtx.shadowColor = 'rgba(0, 240, 255, 0.2)';
+        } else {
+          neuralCtx.fillStyle = `rgba(140, 160, 220, ${opacity})`;
+          neuralCtx.shadowBlur = 0;
+        }
         neuralCtx.fill();
-        
+        neuralCtx.shadowBlur = 0;
+
         node.x += node.vx;
         node.y += node.vy;
-        
+
         if (node.x < -10) node.x = neuralCanvas.width + 10;
         if (node.x > neuralCanvas.width + 10) node.x = -10;
         if (node.y < -10) node.y = neuralCanvas.height + 10;
         if (node.y > neuralCanvas.height + 10) node.y = -10;
       }
-      
+
       requestAnimationFrame(drawNeural);
     }
-    
+
     resizeNeural();
     drawNeural();
-    
+
+    // ─── PARALLAX DEPTH ON HERO ───
+    const heroTitle = document.getElementById('heroTitle');
+    const heroSubtitle = document.getElementById('heroSubtitle');
+    const headlineSpotlight = document.querySelector('.headline-spotlight');
+
     document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const offsetX = (e.clientX - centerX) / centerX;
+      const offsetY = (e.clientY - centerY) / centerY;
+
+      if (heroTitle && heroTitle.style.opacity === '1') {
+        heroTitle.style.transform = `scale(1) translate(${offsetX * 8}px, ${offsetY * 4}px)`;
+      }
+      if (heroSubtitle) {
+        heroSubtitle.style.transform = `translate(${offsetX * -4}px, ${offsetY * -2}px)`;
+      }
+      if (headlineSpotlight) {
+        headlineSpotlight.style.transform = `translate(calc(-50% + ${offsetX * 15}px), calc(-50% + ${offsetY * 10}px))`;
+      }
     });
-    
-    // HUD clock
+
+    // ─── HUD CLOCK ───
     function updateClock() {
       const now = new Date();
       const hours = String(now.getHours()).padStart(2, '0');
@@ -970,30 +1267,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     setInterval(updateClock, 1000);
     updateClock();
-    
+
+    // ─── DYNAMIC HUD TELEMETRY ───
+    function updateTelemetry() {
+      const threads = 2048 + Math.floor(Math.random() * 128 - 64);
+      const latency = (0.05 + Math.random() * 0.04).toFixed(3);
+      document.getElementById('hudTelemetry').textContent =
+        `SYS: ACTIVE | THREADS: ${threads.toLocaleString()} | LATENCY: ${latency}ms`;
+
+      const signals = 800 + Math.floor(Math.random() * 100);
+      const queue = Math.floor(Math.random() * 5);
+      const drift = (Math.random() * 0.06 - 0.01).toFixed(3);
+      const driftSign = parseFloat(drift) >= 0 ? '+' : '';
+      document.getElementById('hudTelemetry2').textContent =
+        `SIGNALS: ${signals} | QUEUE: ${queue} | DRIFT: ${driftSign}${drift}`;
+    }
+    setInterval(updateTelemetry, 1500);
+
     // Value bracket updater
     function updateValueBracket() {
       const value = (0.95 + Math.random() * 0.05).toFixed(4);
       document.getElementById('valueBracket').textContent = `⟨ ${value} ⟩`;
     }
     setInterval(updateValueBracket, 2000);
-    
-    // Hero entrance animations (delayed for boot sequence)
+
+    // ─── HERO ENTRANCE ANIMATIONS (delayed for boot sequence) ───
     setTimeout(() => {
       document.getElementById('heroTitle').style.opacity = '1';
       document.getElementById('heroTitle').style.transform = 'scale(1)';
     }, 4150);
-    
+
     setTimeout(() => {
       document.getElementById('heroSubtitle').style.opacity = '1';
       document.getElementById('heroSubtitle').style.transform = 'translateY(0)';
     }, 4650);
-    
+
     setTimeout(() => {
       document.getElementById('scrollIndicator').style.opacity = '1';
     }, 5000);
-    
-    // Responsive stats layout
+
+    // ─── RESPONSIVE LAYOUT ───
     function updateStatsLayout() {
       const container = document.querySelector('.stats-container');
       if (window.innerWidth >= 768) {
@@ -1007,13 +1320,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       resizeNeural();
       updateStatsLayout();
     });
-    
-    // Intersection Observer for scroll animations with glitch
+
+    // ─── INTERSECTION OBSERVER FOR SCROLL ANIMATIONS ───
     const observerOptions = {
       threshold: 0.25,
       rootMargin: '0px'
     };
-    
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1021,11 +1334,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           setTimeout(() => {
             entry.target.classList.remove('glitch-reveal');
           }, 100);
-          
+
           setTimeout(() => {
             entry.target.classList.add('visible');
           }, 50);
-          
+
           if (entry.target.classList.contains('stat-item')) {
             const valueEl = entry.target.querySelector('.stat-value');
             const targetValue = parseFloat(valueEl.dataset.value);
@@ -1034,10 +1347,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             const steps = 70;
             const increment = targetValue / steps;
             let current = 0;
-            
+
             const counter = setInterval(() => {
               current += increment;
-              
+
               if (current >= targetValue) {
                 valueEl.textContent = targetValue + suffix;
                 valueEl.classList.add('stat-flash');
@@ -1051,22 +1364,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               }
             }, duration / steps);
           }
-          
+
           observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
-    
+
     document.querySelectorAll('.fade-in-up').forEach(el => {
       observer.observe(el);
     });
-    
-    // Boot sequence fade-out
+
+    // ─── BOOT SEQUENCE FADE-OUT ───
     setTimeout(() => {
       const bootOverlay = document.getElementById('bootOverlay');
       bootOverlay.classList.add('fade-out');
       document.body.classList.remove('boot-active');
-      
+
       setTimeout(() => {
         bootOverlay.remove();
       }, 800);
