@@ -1081,6 +1081,280 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       margin-top: 4px;
       opacity: 0.6;
     }
+
+    /* ─── FREQUENCY LOCK CTA ─── */
+    .freq-lock-section {
+      position: relative;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 128px 24px;
+      background-color: #06070a;
+    }
+
+    .freq-lock-container {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .freq-lock-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      color: rgba(0, 240, 255, 0.2);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .freq-lock-title {
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 500;
+      color: #FAFAFA;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .freq-lock-subtitle {
+      font-size: 13px;
+      color: #444;
+      font-weight: 300;
+      margin-bottom: 60px;
+      line-height: 1.6;
+    }
+
+    .freq-lock-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: rgba(0, 240, 255, 0.1);
+      letter-spacing: 0.15em;
+      margin-bottom: 48px;
+    }
+
+    .freq-dials {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+
+    .freq-dial {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .freq-dial-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: #333;
+      width: 60px;
+      text-align: right;
+      flex-shrink: 0;
+      transition: color 0.3s;
+    }
+
+    .freq-dial-label.locked {
+      color: rgba(0, 240, 255, 0.5);
+    }
+
+    .freq-slider-track {
+      flex: 1;
+      position: relative;
+      height: 32px;
+      cursor: none;
+    }
+
+    .freq-slider-bg {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: #1a1a1a;
+      transform: translateY(-50%);
+    }
+
+    .freq-slider-fill {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 0%;
+      height: 1px;
+      background: rgba(0, 240, 255, 0.15);
+      transform: translateY(-50%);
+      transition: background 0.3s;
+    }
+
+    .freq-slider-fill.locked {
+      background: rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+
+    .freq-slider-thumb {
+      position: absolute;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      pointer-events: none;
+    }
+
+    .freq-slider-thumb.locked {
+      border-color: rgba(0, 240, 255, 0.6);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+      background: rgba(0, 240, 255, 0.1);
+    }
+
+    /* Tick marks on slider */
+    .freq-slider-ticks {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .freq-slider-ticks::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0px,
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 10px
+      );
+    }
+
+    .freq-dial-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #333;
+      width: 50px;
+      text-align: left;
+      flex-shrink: 0;
+      transition: color 0.3s;
+    }
+
+    .freq-dial-value.locked {
+      color: rgba(0, 240, 255, 0.6);
+    }
+
+    /* Signal strength meter */
+    .signal-meter {
+      margin-bottom: 32px;
+    }
+
+    .signal-meter-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      color: #333;
+      margin-bottom: 8px;
+      transition: color 0.3s;
+    }
+
+    .signal-meter-bar {
+      width: 100%;
+      height: 2px;
+      background: #111;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signal-meter-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.3), rgba(0, 240, 255, 0.6));
+      transition: width 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .signal-meter-fill.full {
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+    }
+
+    /* Channel established state */
+    .channel-locked {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      pointer-events: none;
+    }
+
+    .channel-locked.revealed {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .channel-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: rgba(0, 240, 255, 0.5);
+      margin-bottom: 24px;
+    }
+
+    .channel-email {
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .channel-email a {
+      color: #FAFAFA;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding-bottom: 4px;
+      transition: border-color 0.3s;
+    }
+
+    .channel-email a:hover {
+      border-color: rgba(0, 240, 255, 0.5);
+    }
+
+    @keyframes channelPulse {
+      0%, 100% { box-shadow: 0 0 0 rgba(0, 240, 255, 0); }
+      50% { box-shadow: 0 0 40px rgba(0, 240, 255, 0.1); }
+    }
+
+    .channel-locked.revealed {
+      animation: channelPulse 3s ease-in-out infinite;
+    }
+
+    @media (max-width: 767px) {
+      .freq-dial {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .freq-dial-label {
+        width: auto;
+        text-align: left;
+      }
+      .freq-slider-track {
+        width: 100%;
+        order: 3;
+      }
+      .freq-dial-value {
+        width: auto;
+      }
+    }
   </style>
 </head>
 <body class="boot-active">
@@ -1312,16 +1586,77 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </p>
       </div>
     </section>
-    
+
     <!-- Section divider -->
     <div class="section-divider"></div>
-    
+
+    <!-- Frequency Lock CTA -->
+    <section id="contact" class="freq-lock-section">
+      <div class="freq-lock-container fade-in-up">
+        <div class="freq-lock-header">SECURE CHANNEL</div>
+        <h2 class="freq-lock-title">Establish Connection</h2>
+        <p class="freq-lock-subtitle">Tune all three frequencies to establish a secure channel.<br>The signal values are embedded in this interface.</p>
+        <div class="freq-lock-hint">HINT: THE DATA IS WATCHING YOU TOO</div>
+
+        <div class="freq-dials">
+          <div class="freq-dial">
+            <span class="freq-dial-label" id="labelAlpha">ALPHA</span>
+            <div class="freq-slider-track" id="sliderAlpha" data-target="0.847">
+              <div class="freq-slider-bg"></div>
+              <div class="freq-slider-ticks"></div>
+              <div class="freq-slider-fill" id="fillAlpha"></div>
+              <div class="freq-slider-thumb" id="thumbAlpha"></div>
+            </div>
+            <span class="freq-dial-value" id="valueAlpha">0.000</span>
+          </div>
+
+          <div class="freq-dial">
+            <span class="freq-dial-label" id="labelBeta">BETA</span>
+            <div class="freq-slider-track" id="sliderBeta" data-target="0.723">
+              <div class="freq-slider-bg"></div>
+              <div class="freq-slider-ticks"></div>
+              <div class="freq-slider-fill" id="fillBeta"></div>
+              <div class="freq-slider-thumb" id="thumbBeta"></div>
+            </div>
+            <span class="freq-dial-value" id="valueBeta">0.000</span>
+          </div>
+
+          <div class="freq-dial">
+            <span class="freq-dial-label" id="labelGamma">GAMMA</span>
+            <div class="freq-slider-track" id="sliderGamma" data-target="0.912">
+              <div class="freq-slider-bg"></div>
+              <div class="freq-slider-ticks"></div>
+              <div class="freq-slider-fill" id="fillGamma"></div>
+              <div class="freq-slider-thumb" id="thumbGamma"></div>
+            </div>
+            <span class="freq-dial-value" id="valueGamma">0.000</span>
+          </div>
+        </div>
+
+        <div class="signal-meter">
+          <div class="signal-meter-label" id="signalLabel">SIGNAL STRENGTH: 0%</div>
+          <div class="signal-meter-bar">
+            <div class="signal-meter-fill" id="signalFill"></div>
+          </div>
+        </div>
+
+        <div class="channel-locked" id="channelLocked">
+          <div class="channel-status">▸ CHANNEL ESTABLISHED ▸ SECURE LINE OPEN</div>
+          <div class="channel-email">
+            <a href="mailto:hello@valkri.ai">hello@valkri.ai</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section divider -->
+    <div class="section-divider"></div>
+
     <!-- Footer -->
     <footer style="width: 100%; padding: 40px 24px;">
       <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
         <span style="font-size: 14px; color: #FAFAFA; font-weight: 500; letter-spacing: -0.01em;">Valkri</span>
         <div style="display: flex; align-items: center; gap: 32px;">
-          <a href="mailto:hello@valkri.ai" style="font-size: 11px; color: #444; text-decoration: none; transition: color 0.3s;">hello@valkri.ai</a>
           <span class="mono-label" style="font-size: 10px; color: #333;">© 2026</span>
         </div>
       </div>
@@ -1828,6 +2163,138 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
     }
     setInterval(randomizeRadarBlips, 4000);
+
+    // ─── FREQUENCY LOCK CTA ───
+    const sliderConfigs = [
+      { id: 'Alpha', target: 0.847 },
+      { id: 'Beta', target: 0.723 },
+      { id: 'Gamma', target: 0.912 }
+    ];
+
+    const sliderState = { Alpha: 0, Beta: 0, Gamma: 0 };
+    const sliderLocked = { Alpha: false, Beta: false, Gamma: false };
+    let channelOpen = false;
+    const tolerance = 0.015;
+
+    function initSliders() {
+      sliderConfigs.forEach(({ id }) => {
+        const track = document.getElementById('slider' + id);
+        let dragging = false;
+
+        function updateSlider(clientX) {
+          if (channelOpen || sliderLocked[id]) return;
+          const rect = track.getBoundingClientRect();
+          let pct = (clientX - rect.left) / rect.width;
+          pct = Math.max(0, Math.min(1, pct));
+          sliderState[id] = pct;
+
+          const thumb = document.getElementById('thumb' + id);
+          const fill = document.getElementById('fill' + id);
+          const valueEl = document.getElementById('value' + id);
+          const labelEl = document.getElementById('label' + id);
+
+          thumb.style.left = (pct * 100) + '%';
+          fill.style.width = (pct * 100) + '%';
+          valueEl.textContent = pct.toFixed(3);
+
+          // Check if locked
+          const config = sliderConfigs.find(c => c.id === id);
+          const isLocked = Math.abs(pct - config.target) <= tolerance;
+          sliderLocked[id] = isLocked;
+
+          if (isLocked) {
+            thumb.classList.add('locked');
+            fill.classList.add('locked');
+            valueEl.classList.add('locked');
+            labelEl.classList.add('locked');
+          } else {
+            thumb.classList.remove('locked');
+            fill.classList.remove('locked');
+            valueEl.classList.remove('locked');
+            labelEl.classList.remove('locked');
+          }
+
+          updateSignalStrength();
+        }
+
+        track.addEventListener('mousedown', (e) => {
+          dragging = true;
+          updateSlider(e.clientX);
+        });
+
+        document.addEventListener('mousemove', (e) => {
+          if (dragging) updateSlider(e.clientX);
+        });
+
+        document.addEventListener('mouseup', () => {
+          dragging = false;
+        });
+
+        // Touch support
+        track.addEventListener('touchstart', (e) => {
+          dragging = true;
+          updateSlider(e.touches[0].clientX);
+        }, { passive: true });
+
+        track.addEventListener('touchmove', (e) => {
+          if (dragging) updateSlider(e.touches[0].clientX);
+        }, { passive: true });
+
+        track.addEventListener('touchend', () => {
+          dragging = false;
+        });
+      });
+    }
+
+    function updateSignalStrength() {
+      let totalProximity = 0;
+
+      sliderConfigs.forEach(({ id, target }) => {
+        const val = sliderState[id];
+        const distance = Math.abs(val - target);
+        const proximity = Math.max(0, 1 - distance / 0.5);
+        totalProximity += proximity;
+      });
+
+      const strength = Math.round((totalProximity / 3) * 100);
+      const signalFill = document.getElementById('signalFill');
+      const signalLabel = document.getElementById('signalLabel');
+
+      signalFill.style.width = strength + '%';
+      signalLabel.textContent = `SIGNAL STRENGTH: ${strength}%`;
+
+      if (strength >= 95) {
+        signalFill.classList.add('full');
+        signalLabel.style.color = 'rgba(0, 240, 255, 0.4)';
+      } else {
+        signalFill.classList.remove('full');
+        signalLabel.style.color = '';
+      }
+
+      // Check if all 3 are locked
+      const allLocked = sliderConfigs.every(({ id }) => sliderLocked[id]);
+      if (allLocked && !channelOpen) {
+        channelOpen = true;
+        openChannel();
+      }
+    }
+
+    function openChannel() {
+      const channelEl = document.getElementById('channelLocked');
+      const signalLabel = document.getElementById('signalLabel');
+      const signalFill = document.getElementById('signalFill');
+
+      signalFill.style.width = '100%';
+      signalFill.classList.add('full');
+      signalLabel.textContent = 'SIGNAL STRENGTH: 100% — LOCKED';
+      signalLabel.style.color = 'rgba(0, 240, 255, 0.5)';
+
+      setTimeout(() => {
+        channelEl.classList.add('revealed');
+      }, 400);
+    }
+
+    initSliders();
 
     // ─── BOOT SEQUENCE FADE-OUT ───
     setTimeout(() => {
