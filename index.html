@@ -807,6 +807,280 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       line-height: 1.6;
       transition: color 0.3s;
     }
+
+    /* ─── VISITOR DETECTION OVERLAY ─── */
+    .visitor-scan-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .visitor-scan-overlay.active {
+      opacity: 1;
+    }
+
+    .visitor-scan-overlay.fade-out {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .visitor-scan-terminal {
+      position: absolute;
+      bottom: 60px;
+      left: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      line-height: 1.8;
+      color: rgba(0, 240, 255, 0.5);
+      letter-spacing: 0.05em;
+    }
+
+    .visitor-scan-terminal .scan-line {
+      opacity: 0;
+      transform: translateX(-5px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .visitor-scan-terminal .scan-line.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .visitor-scan-terminal .scan-label {
+      color: rgba(0, 240, 255, 0.25);
+    }
+
+    .visitor-scan-terminal .scan-value {
+      color: rgba(0, 240, 255, 0.6);
+    }
+
+    .visitor-scan-terminal .scan-header {
+      color: rgba(0, 240, 255, 0.35);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      margin-bottom: 6px;
+    }
+
+    /* ─── PERIMETER TRACE ─── */
+    .perimeter-trace {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 998;
+    }
+
+    .perimeter-trace svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .perimeter-line {
+      fill: none;
+      stroke: rgba(0, 240, 255, 0.06);
+      stroke-width: 1;
+      stroke-dasharray: 8 12;
+      stroke-dashoffset: 0;
+      animation: perimeterDash 20s linear infinite;
+    }
+
+    .perimeter-line-inner {
+      fill: none;
+      stroke: rgba(0, 240, 255, 0.03);
+      stroke-width: 0.5;
+      stroke-dasharray: 4 20;
+      stroke-dashoffset: 0;
+      animation: perimeterDash 15s linear infinite reverse;
+    }
+
+    @keyframes perimeterDash {
+      to { stroke-dashoffset: -200; }
+    }
+
+    /* Corner brackets */
+    .corner-bracket {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      z-index: 998;
+    }
+
+    .corner-bracket::before,
+    .corner-bracket::after {
+      content: '';
+      position: absolute;
+      background: rgba(0, 240, 255, 0.08);
+    }
+
+    .corner-bracket.tl { top: 12px; left: 12px; }
+    .corner-bracket.tl::before { width: 20px; height: 1px; top: 0; left: 0; }
+    .corner-bracket.tl::after { width: 1px; height: 20px; top: 0; left: 0; }
+
+    .corner-bracket.tr { top: 12px; right: 12px; }
+    .corner-bracket.tr::before { width: 20px; height: 1px; top: 0; right: 0; }
+    .corner-bracket.tr::after { width: 1px; height: 20px; top: 0; right: 0; }
+
+    .corner-bracket.bl { bottom: 12px; left: 12px; }
+    .corner-bracket.bl::before { width: 20px; height: 1px; bottom: 0; left: 0; }
+    .corner-bracket.bl::after { width: 1px; height: 20px; bottom: 0; left: 0; }
+
+    .corner-bracket.br { bottom: 12px; right: 12px; }
+    .corner-bracket.br::before { width: 20px; height: 1px; bottom: 0; right: 0; }
+    .corner-bracket.br::after { width: 1px; height: 20px; bottom: 0; right: 0; }
+
+    /* ─── RADAR SWEEP ─── */
+    .radar-container {
+      position: fixed;
+      bottom: 80px;
+      right: 24px;
+      width: 80px;
+      height: 80px;
+      pointer-events: none;
+      z-index: 998;
+      opacity: 0.5;
+    }
+
+    .radar-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 0.5px solid rgba(0, 240, 255, 0.06);
+    }
+
+    .radar-ring-1 { inset: 0; }
+    .radar-ring-2 { inset: 15px; }
+    .radar-ring-3 { inset: 30px; }
+
+    .radar-crosshair-h {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 0.5px;
+      background: rgba(0, 240, 255, 0.04);
+      transform: translateY(-50%);
+    }
+
+    .radar-crosshair-v {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 0.5px;
+      height: 100%;
+      background: rgba(0, 240, 255, 0.04);
+      transform: translateX(-50%);
+    }
+
+    .radar-sweep-arm {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50%;
+      height: 1px;
+      transform-origin: left center;
+      animation: radarSweep 4s linear infinite;
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.15), transparent);
+    }
+
+    .radar-sweep-cone {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50%;
+      height: 50%;
+      transform-origin: left top;
+      animation: radarSweep 4s linear infinite;
+      background: conic-gradient(from 0deg, rgba(0, 240, 255, 0.06) 0deg, transparent 30deg);
+      border-radius: 0 100% 0 0;
+    }
+
+    @keyframes radarSweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .radar-center-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 2px;
+      height: 2px;
+      background: rgba(0, 240, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .radar-blip {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(0, 240, 255, 0.4);
+      border-radius: 50%;
+      animation: radarBlipPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes radarBlipPulse {
+      0%, 100% { opacity: 0; }
+      10% { opacity: 1; }
+      60% { opacity: 0; }
+    }
+
+    .radar-label {
+      position: absolute;
+      top: -12px;
+      left: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px;
+      color: rgba(0, 240, 255, 0.12);
+      letter-spacing: 0.15em;
+    }
+
+    /* ─── KEYSTROKE HUD ─── */
+    .keystroke-hud {
+      position: fixed;
+      top: 40px;
+      left: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: rgba(0, 240, 255, 0.0);
+      letter-spacing: 0.1em;
+      z-index: 998;
+      pointer-events: none;
+      transition: color 0.1s ease;
+    }
+
+    .keystroke-hud.flash {
+      color: rgba(0, 240, 255, 0.35);
+    }
+
+    /* ─── IDLE DETECTION ─── */
+    .idle-indicator {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: rgba(0, 240, 255, 0.0);
+      pointer-events: none;
+      z-index: 997;
+      transition: color 0.8s ease;
+      text-align: center;
+    }
+
+    .idle-indicator.active {
+      color: rgba(0, 240, 255, 0.08);
+    }
+
+    .idle-indicator .idle-timer {
+      font-size: 8px;
+      letter-spacing: 0.15em;
+      margin-top: 4px;
+      opacity: 0.6;
+    }
   </style>
 </head>
 <body class="boot-active">
@@ -823,6 +1097,48 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- Scanning sweep line -->
   <div class="scan-sweep" id="scanSweep"></div>
+
+  <!-- Perimeter trace -->
+  <div class="perimeter-trace">
+    <svg viewBox="0 0 1920 1080" preserveAspectRatio="none">
+      <rect class="perimeter-line" x="8" y="8" width="1904" height="1064" rx="0"/>
+      <rect class="perimeter-line-inner" x="20" y="20" width="1880" height="1040" rx="0"/>
+    </svg>
+  </div>
+  <div class="corner-bracket tl"></div>
+  <div class="corner-bracket tr"></div>
+  <div class="corner-bracket bl"></div>
+  <div class="corner-bracket br"></div>
+
+  <!-- Radar sweep -->
+  <div class="radar-container" id="radarContainer">
+    <div class="radar-label">PERIMETER</div>
+    <div class="radar-ring radar-ring-1"></div>
+    <div class="radar-ring radar-ring-2"></div>
+    <div class="radar-ring radar-ring-3"></div>
+    <div class="radar-crosshair-h"></div>
+    <div class="radar-crosshair-v"></div>
+    <div class="radar-sweep-cone"></div>
+    <div class="radar-sweep-arm"></div>
+    <div class="radar-center-dot"></div>
+    <div class="radar-blip" id="radarBlip1" style="top: 25%; left: 65%;"></div>
+    <div class="radar-blip" id="radarBlip2" style="top: 60%; left: 30%; animation-delay: 1.5s;"></div>
+    <div class="radar-blip" id="radarBlip3" style="top: 35%; left: 40%; animation-delay: 3s;"></div>
+  </div>
+
+  <!-- Visitor detection overlay -->
+  <div class="visitor-scan-overlay" id="visitorScanOverlay">
+    <div class="visitor-scan-terminal" id="visitorScanTerminal"></div>
+  </div>
+
+  <!-- Keystroke HUD -->
+  <div class="keystroke-hud" id="keystrokeHud">INPUT: ——</div>
+
+  <!-- Idle detection -->
+  <div class="idle-indicator" id="idleIndicator">
+    <div>SUBJECT IDLE</div>
+    <div class="idle-timer" id="idleTimer">00:00</div>
+  </div>
 
   <!-- Ambient background glow -->
   <div class="ambient-glow"></div>
@@ -1374,6 +1690,145 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       observer.observe(el);
     });
 
+    // ─── VISITOR DETECTION SEQUENCE ───
+    function runVisitorScan() {
+      const overlay = document.getElementById('visitorScanOverlay');
+      const terminal = document.getElementById('visitorScanTerminal');
+      overlay.classList.add('active');
+
+      // Gather real browser metadata
+      const screenRes = `${window.screen.width}x${window.screen.height}`;
+      const viewport = `${window.innerWidth}x${window.innerHeight}`;
+      const platform = navigator.platform || 'UNKNOWN';
+      const lang = navigator.language || 'en-US';
+      const cores = navigator.hardwareConcurrency || '—';
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+      const connection = navigator.connection ? navigator.connection.effectiveType : '—';
+      const touchPoints = navigator.maxTouchPoints || 0;
+      const colorDepth = window.screen.colorDepth + 'bit';
+      const dpr = window.devicePixelRatio.toFixed(1);
+
+      const scanLines = [
+        { label: '▸ SCANNING VISITOR', value: '', isHeader: true },
+        { label: 'DISPLAY', value: screenRes },
+        { label: 'VIEWPORT', value: viewport },
+        { label: 'DPR', value: dpr + 'x' },
+        { label: 'DEPTH', value: colorDepth },
+        { label: 'PLATFORM', value: platform },
+        { label: 'LANG', value: lang.toUpperCase() },
+        { label: 'TIMEZONE', value: tz },
+        { label: 'CORES', value: String(cores) },
+        { label: 'CONNECTION', value: connection.toUpperCase() },
+        { label: 'TOUCH', value: touchPoints > 0 ? `${touchPoints} POINTS` : 'NONE' },
+        { label: '▸ FINGERPRINT', value: generateFingerprint(), isHeader: false },
+        { label: '▸ STATUS', value: 'CATALOGUED', isHeader: false },
+      ];
+
+      // Build terminal lines
+      terminal.innerHTML = '';
+      scanLines.forEach((line, i) => {
+        const div = document.createElement('div');
+        div.className = 'scan-line';
+        if (line.isHeader) {
+          div.innerHTML = `<span class="scan-header">${line.label}</span>`;
+        } else {
+          div.innerHTML = `<span class="scan-label">${line.label} </span><span class="scan-value">${line.value}</span>`;
+        }
+        terminal.appendChild(div);
+
+        // Stagger reveal
+        setTimeout(() => {
+          div.classList.add('visible');
+        }, i * 180);
+      });
+
+      // Fade out after all lines shown
+      const totalTime = scanLines.length * 180 + 2500;
+      setTimeout(() => {
+        overlay.classList.add('fade-out');
+        setTimeout(() => {
+          overlay.classList.remove('active', 'fade-out');
+        }, 800);
+      }, totalTime);
+    }
+
+    function generateFingerprint() {
+      const chars = '0123456789ABCDEF';
+      let fp = '0x';
+      for (let i = 0; i < 12; i++) fp += chars[Math.floor(Math.random() * 16)];
+      return fp;
+    }
+
+    // ─── IDLE DETECTION ───
+    let lastMouseMove = Date.now();
+    let isIdle = false;
+    let idleSeconds = 0;
+    let idleInterval = null;
+    const idleThreshold = 3000; // 3 seconds of no movement
+
+    const idleIndicator = document.getElementById('idleIndicator');
+    const idleTimerEl = document.getElementById('idleTimer');
+    const hudStatusEl = document.getElementById('hudStatus');
+
+    document.addEventListener('mousemove', () => {
+      lastMouseMove = Date.now();
+      if (isIdle) {
+        isIdle = false;
+        idleSeconds = 0;
+        idleIndicator.classList.remove('active');
+        if (hudStatusEl) hudStatusEl.textContent = 'TRACKING ▸ ACTIVE';
+        if (idleInterval) { clearInterval(idleInterval); idleInterval = null; }
+      }
+    });
+
+    setInterval(() => {
+      if (Date.now() - lastMouseMove > idleThreshold && !isIdle) {
+        isIdle = true;
+        idleIndicator.classList.add('active');
+        if (hudStatusEl) hudStatusEl.textContent = 'SUBJECT ▸ IDLE';
+        idleInterval = setInterval(() => {
+          idleSeconds++;
+          const m = String(Math.floor(idleSeconds / 60)).padStart(2, '0');
+          const s = String(idleSeconds % 60).padStart(2, '0');
+          idleTimerEl.textContent = `${m}:${s}`;
+        }, 1000);
+      }
+    }, 500);
+
+    // ─── KEYSTROKE INTERCEPTION ───
+    const keystrokeHud = document.getElementById('keystrokeHud');
+    let keystrokeTimeout = null;
+
+    document.addEventListener('keydown', (e) => {
+      const keyDisplay = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+      const code = e.keyCode || e.which;
+      keystrokeHud.textContent = `INPUT: ${keyDisplay} [0x${code.toString(16).toUpperCase()}]`;
+      keystrokeHud.classList.add('flash');
+
+      clearTimeout(keystrokeTimeout);
+      keystrokeTimeout = setTimeout(() => {
+        keystrokeHud.classList.remove('flash');
+        setTimeout(() => {
+          keystrokeHud.textContent = 'INPUT: ——';
+        }, 300);
+      }, 800);
+    });
+
+    // ─── RADAR BLIP POSITION RANDOMIZER ───
+    function randomizeRadarBlips() {
+      for (let i = 1; i <= 3; i++) {
+        const blip = document.getElementById('radarBlip' + i);
+        if (blip) {
+          // Random position within the radar circle
+          const angle = Math.random() * Math.PI * 2;
+          const radius = 15 + Math.random() * 25;
+          blip.style.top = (50 + Math.sin(angle) * radius) + '%';
+          blip.style.left = (50 + Math.cos(angle) * radius) + '%';
+        }
+      }
+    }
+    setInterval(randomizeRadarBlips, 4000);
+
     // ─── BOOT SEQUENCE FADE-OUT ───
     setTimeout(() => {
       const bootOverlay = document.getElementById('bootOverlay');
@@ -1383,6 +1838,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       setTimeout(() => {
         bootOverlay.remove();
       }, 800);
+
+      // Trigger visitor scan after boot completes
+      setTimeout(runVisitorScan, 1200);
     }, 4200);
   </script>
 </body>
