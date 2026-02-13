@@ -1082,8 +1082,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       opacity: 0.6;
     }
 
-    /* ─── FREQUENCY LOCK CTA ─── */
-    .freq-lock-section {
+    /* ─── NEURAL PATTERN RECOGNITION CTA ─── */
+    .pattern-section {
       position: relative;
       min-height: 100vh;
       width: 100%;
@@ -1094,13 +1094,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       background-color: #06070a;
     }
 
-    .freq-lock-container {
-      max-width: 600px;
+    .pattern-container {
+      max-width: 500px;
       width: 100%;
       text-align: center;
     }
 
-    .freq-lock-header {
+    .pattern-header {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
       letter-spacing: 0.3em;
@@ -1109,7 +1109,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       text-transform: uppercase;
     }
 
-    .freq-lock-title {
+    .pattern-title {
       font-size: clamp(24px, 4vw, 40px);
       font-weight: 500;
       color: #FAFAFA;
@@ -1117,176 +1117,148 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       margin-bottom: 12px;
     }
 
-    .freq-lock-subtitle {
+    .pattern-subtitle {
       font-size: 13px;
       color: #444;
       font-weight: 300;
-      margin-bottom: 60px;
+      margin-bottom: 48px;
       line-height: 1.6;
     }
 
-    .freq-lock-hint {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px;
-      color: rgba(0, 240, 255, 0.1);
-      letter-spacing: 0.15em;
-      margin-bottom: 48px;
-    }
-
-    .freq-dials {
-      display: flex;
-      flex-direction: column;
-      gap: 36px;
-      margin-bottom: 48px;
-    }
-
-    .freq-dial {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .freq-dial-label {
+    .pattern-status {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
-      letter-spacing: 0.15em;
-      color: #333;
-      width: 60px;
-      text-align: right;
-      flex-shrink: 0;
+      letter-spacing: 0.2em;
+      color: rgba(0, 240, 255, 0.25);
+      margin-bottom: 12px;
+      min-height: 18px;
       transition: color 0.3s;
     }
 
-    .freq-dial-label.locked {
+    .pattern-status.error {
+      color: rgba(255, 60, 60, 0.5);
+    }
+
+    .pattern-status.success {
       color: rgba(0, 240, 255, 0.5);
     }
 
-    .freq-slider-track {
-      flex: 1;
-      position: relative;
-      height: 32px;
-      cursor: none;
-    }
-
-    .freq-slider-bg {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: #1a1a1a;
-      transform: translateY(-50%);
-    }
-
-    .freq-slider-fill {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 0%;
-      height: 1px;
-      background: rgba(0, 240, 255, 0.15);
-      transform: translateY(-50%);
-      transition: background 0.3s;
-    }
-
-    .freq-slider-fill.locked {
-      background: rgba(0, 240, 255, 0.4);
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
-    }
-
-    .freq-slider-thumb {
-      position: absolute;
-      top: 50%;
-      width: 12px;
-      height: 12px;
-      border: 1px solid rgba(0, 240, 255, 0.2);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: border-color 0.3s, box-shadow 0.3s;
-      pointer-events: none;
-    }
-
-    .freq-slider-thumb.locked {
-      border-color: rgba(0, 240, 255, 0.6);
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
-      background: rgba(0, 240, 255, 0.1);
-    }
-
-    /* Tick marks on slider */
-    .freq-slider-ticks {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 8px;
-      transform: translateY(-50%);
-      pointer-events: none;
-    }
-
-    .freq-slider-ticks::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.03) 0px,
-        rgba(255, 255, 255, 0.03) 1px,
-        transparent 1px,
-        transparent 10px
-      );
-    }
-
-    .freq-dial-value {
+    .pattern-round {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 8px;
+      letter-spacing: 0.15em;
       color: #333;
-      width: 50px;
-      text-align: left;
-      flex-shrink: 0;
-      transition: color 0.3s;
-    }
-
-    .freq-dial-value.locked {
-      color: rgba(0, 240, 255, 0.6);
-    }
-
-    /* Signal strength meter */
-    .signal-meter {
       margin-bottom: 32px;
     }
 
-    .signal-meter-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px;
-      letter-spacing: 0.2em;
-      color: #333;
-      margin-bottom: 8px;
-      transition: color 0.3s;
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 280px;
+      margin: 0 auto 48px;
     }
 
-    .signal-meter-bar {
-      width: 100%;
-      height: 2px;
-      background: #111;
+    .pattern-node {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid rgba(140, 160, 220, 0.08);
+      background: rgba(140, 160, 220, 0.02);
+      cursor: none;
       position: relative;
-      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
     }
 
-    .signal-meter-fill {
+    .pattern-node:hover {
+      border-color: rgba(140, 160, 220, 0.15);
+      background: rgba(140, 160, 220, 0.04);
+    }
+
+    .pattern-node.flash {
+      border-color: rgba(0, 240, 255, 0.5);
+      background: rgba(0, 240, 255, 0.08);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.15), 0 0 40px rgba(0, 240, 255, 0.05);
+    }
+
+    .pattern-node.user-flash {
+      border-color: rgba(0, 240, 255, 0.4);
+      background: rgba(0, 240, 255, 0.06);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+    }
+
+    .pattern-node.error-flash {
+      border-color: rgba(255, 60, 60, 0.5);
+      background: rgba(255, 60, 60, 0.08);
+      box-shadow: 0 0 20px rgba(255, 60, 60, 0.15);
+    }
+
+    .pattern-node.locked {
+      border-color: rgba(0, 240, 255, 0.3);
+      background: rgba(0, 240, 255, 0.04);
+    }
+
+    .pattern-node-inner {
       position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.3), rgba(0, 240, 255, 0.6));
-      transition: width 0.3s ease, box-shadow 0.3s ease;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(140, 160, 220, 0.15);
+      transform: translate(-50%, -50%);
+      transition: background 0.2s, box-shadow 0.2s;
     }
 
-    .signal-meter-fill.full {
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+    .pattern-node.flash .pattern-node-inner {
+      background: rgba(0, 240, 255, 0.6);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+    }
+
+    .pattern-node.locked .pattern-node-inner {
+      background: rgba(0, 240, 255, 0.3);
+    }
+
+    /* Connection lines between nodes during sequence */
+    .pattern-grid-wrapper {
+      position: relative;
+      max-width: 280px;
+      margin: 0 auto 48px;
+    }
+
+    .pattern-grid-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .pattern-grid {
+      position: relative;
+      z-index: 2;
+      margin: 0;
+    }
+
+    .pattern-start-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: rgba(0, 240, 255, 0.3);
+      background: transparent;
+      border: 1px solid rgba(0, 240, 255, 0.1);
+      padding: 12px 32px;
+      cursor: none;
+      transition: border-color 0.3s, color 0.3s;
+      text-transform: uppercase;
+    }
+
+    .pattern-start-btn:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+      color: rgba(0, 240, 255, 0.5);
+    }
+
+    .pattern-start-btn:disabled {
+      opacity: 0.3;
+      pointer-events: none;
     }
 
     /* Channel established state */
@@ -1336,24 +1308,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     .channel-locked.revealed {
       animation: channelPulse 3s ease-in-out infinite;
-    }
-
-    @media (max-width: 767px) {
-      .freq-dial {
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .freq-dial-label {
-        width: auto;
-        text-align: left;
-      }
-      .freq-slider-track {
-        width: 100%;
-        order: 3;
-      }
-      .freq-dial-value {
-        width: auto;
-      }
     }
   </style>
 </head>
@@ -1590,58 +1544,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Section divider -->
     <div class="section-divider"></div>
 
-    <!-- Frequency Lock CTA -->
-    <section id="contact" class="freq-lock-section">
-      <div class="freq-lock-container fade-in-up">
-        <div class="freq-lock-header">SECURE CHANNEL</div>
-        <h2 class="freq-lock-title">Establish Connection</h2>
-        <p class="freq-lock-subtitle">Tune all three frequencies to establish a secure channel.<br>The signal values are embedded in this interface.</p>
-        <div class="freq-lock-hint">HINT: THE DATA IS WATCHING YOU TOO</div>
+    <!-- Neural Pattern Recognition CTA -->
+    <section id="contact" class="pattern-section">
+      <div class="pattern-container fade-in-up">
+        <div class="pattern-header">NEURAL HANDSHAKE</div>
+        <h2 class="pattern-title">Prove You're Watching</h2>
+        <p class="pattern-subtitle">Replicate the neural firing pattern to establish a secure channel.</p>
 
-        <div class="freq-dials">
-          <div class="freq-dial">
-            <span class="freq-dial-label" id="labelAlpha">ALPHA</span>
-            <div class="freq-slider-track" id="sliderAlpha" data-target="0.847">
-              <div class="freq-slider-bg"></div>
-              <div class="freq-slider-ticks"></div>
-              <div class="freq-slider-fill" id="fillAlpha"></div>
-              <div class="freq-slider-thumb" id="thumbAlpha"></div>
-            </div>
-            <span class="freq-dial-value" id="valueAlpha">0.000</span>
-          </div>
+        <div class="pattern-status" id="patternStatus">▸ INITIATE SEQUENCE</div>
+        <div class="pattern-round" id="patternRound">ROUND 0 / 3</div>
 
-          <div class="freq-dial">
-            <span class="freq-dial-label" id="labelBeta">BETA</span>
-            <div class="freq-slider-track" id="sliderBeta" data-target="0.723">
-              <div class="freq-slider-bg"></div>
-              <div class="freq-slider-ticks"></div>
-              <div class="freq-slider-fill" id="fillBeta"></div>
-              <div class="freq-slider-thumb" id="thumbBeta"></div>
-            </div>
-            <span class="freq-dial-value" id="valueBeta">0.000</span>
-          </div>
-
-          <div class="freq-dial">
-            <span class="freq-dial-label" id="labelGamma">GAMMA</span>
-            <div class="freq-slider-track" id="sliderGamma" data-target="0.912">
-              <div class="freq-slider-bg"></div>
-              <div class="freq-slider-ticks"></div>
-              <div class="freq-slider-fill" id="fillGamma"></div>
-              <div class="freq-slider-thumb" id="thumbGamma"></div>
-            </div>
-            <span class="freq-dial-value" id="valueGamma">0.000</span>
+        <div class="pattern-grid-wrapper">
+          <div class="pattern-grid" id="patternGrid">
+            <div class="pattern-node" data-index="0"><div class="pattern-node-inner"></div></div>
+            <div class="pattern-node" data-index="1"><div class="pattern-node-inner"></div></div>
+            <div class="pattern-node" data-index="2"><div class="pattern-node-inner"></div></div>
+            <div class="pattern-node" data-index="3"><div class="pattern-node-inner"></div></div>
+            <div class="pattern-node" data-index="4"><div class="pattern-node-inner"></div></div>
+            <div class="pattern-node" data-index="5"><div class="pattern-node-inner"></div></div>
+            <div class="pattern-node" data-index="6"><div class="pattern-node-inner"></div></div>
+            <div class="pattern-node" data-index="7"><div class="pattern-node-inner"></div></div>
+            <div class="pattern-node" data-index="8"><div class="pattern-node-inner"></div></div>
           </div>
         </div>
 
-        <div class="signal-meter">
-          <div class="signal-meter-label" id="signalLabel">SIGNAL STRENGTH: 0%</div>
-          <div class="signal-meter-bar">
-            <div class="signal-meter-fill" id="signalFill"></div>
-          </div>
-        </div>
+        <button class="pattern-start-btn" id="patternStartBtn">BEGIN SEQUENCE</button>
 
-        <div class="channel-locked" id="channelLocked">
-          <div class="channel-status">▸ CHANNEL ESTABLISHED ▸ SECURE LINE OPEN</div>
+        <div class="channel-locked" id="channelLocked" style="margin-top: 32px;">
+          <div class="channel-status">▸ NEURAL HANDSHAKE COMPLETE ▸ SECURE LINE OPEN</div>
           <div class="channel-email">
             <a href="mailto:hello@valkri.ai">hello@valkri.ai</a>
           </div>
@@ -2164,137 +2094,164 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     setInterval(randomizeRadarBlips, 4000);
 
-    // ─── FREQUENCY LOCK CTA ───
-    const sliderConfigs = [
-      { id: 'Alpha', target: 0.847 },
-      { id: 'Beta', target: 0.723 },
-      { id: 'Gamma', target: 0.912 }
-    ];
+    // ─── NEURAL PATTERN RECOGNITION (SIMON GAME) ───
+    const patternNodes = document.querySelectorAll('.pattern-node');
+    const patternStatus = document.getElementById('patternStatus');
+    const patternRound = document.getElementById('patternRound');
+    const patternStartBtn = document.getElementById('patternStartBtn');
 
-    const sliderState = { Alpha: 0, Beta: 0, Gamma: 0 };
-    const sliderLocked = { Alpha: false, Beta: false, Gamma: false };
-    let channelOpen = false;
-    const tolerance = 0.015;
+    const totalRounds = 3;
+    const sequenceLengths = [3, 4, 5];
+    let currentRound = 0;
+    let sequence = [];
+    let playerIndex = 0;
+    let isPlaying = false; // system is showing sequence
+    let isPlayerTurn = false;
+    let gameComplete = false;
 
-    function initSliders() {
-      sliderConfigs.forEach(({ id }) => {
-        const track = document.getElementById('slider' + id);
-        let dragging = false;
+    function generateSequence(length) {
+      const seq = [];
+      for (let i = 0; i < length; i++) {
+        let next;
+        do {
+          next = Math.floor(Math.random() * 9);
+        } while (seq.length > 0 && seq[seq.length - 1] === next);
+        seq.push(next);
+      }
+      return seq;
+    }
 
-        function updateSlider(clientX) {
-          if (channelOpen || sliderLocked[id]) return;
-          const rect = track.getBoundingClientRect();
-          let pct = (clientX - rect.left) / rect.width;
-          pct = Math.max(0, Math.min(1, pct));
-          sliderState[id] = pct;
+    function flashNode(index, duration = 400) {
+      return new Promise(resolve => {
+        const node = patternNodes[index];
+        node.classList.add('flash');
+        setTimeout(() => {
+          node.classList.remove('flash');
+          setTimeout(resolve, 150);
+        }, duration);
+      });
+    }
 
-          const thumb = document.getElementById('thumb' + id);
-          const fill = document.getElementById('fill' + id);
-          const valueEl = document.getElementById('value' + id);
-          const labelEl = document.getElementById('label' + id);
+    function flashNodeUser(index) {
+      return new Promise(resolve => {
+        const node = patternNodes[index];
+        node.classList.add('user-flash');
+        setTimeout(() => {
+          node.classList.remove('user-flash');
+          resolve();
+        }, 250);
+      });
+    }
 
-          thumb.style.left = (pct * 100) + '%';
-          fill.style.width = (pct * 100) + '%';
-          valueEl.textContent = pct.toFixed(3);
+    function flashNodeError(index) {
+      return new Promise(resolve => {
+        const node = patternNodes[index];
+        node.classList.add('error-flash');
+        setTimeout(() => {
+          node.classList.remove('error-flash');
+          resolve();
+        }, 400);
+      });
+    }
 
-          // Check if locked
-          const config = sliderConfigs.find(c => c.id === id);
-          const isLocked = Math.abs(pct - config.target) <= tolerance;
-          sliderLocked[id] = isLocked;
+    async function playSequence() {
+      isPlaying = true;
+      isPlayerTurn = false;
+      patternStatus.textContent = '▸ OBSERVE';
+      patternStatus.className = 'pattern-status';
+      patternStartBtn.disabled = true;
 
-          if (isLocked) {
-            thumb.classList.add('locked');
-            fill.classList.add('locked');
-            valueEl.classList.add('locked');
-            labelEl.classList.add('locked');
+      await new Promise(r => setTimeout(r, 600));
+
+      for (let i = 0; i < sequence.length; i++) {
+        await flashNode(sequence[i]);
+      }
+
+      await new Promise(r => setTimeout(r, 300));
+      isPlaying = false;
+      isPlayerTurn = true;
+      playerIndex = 0;
+      patternStatus.textContent = '▸ REPLICATE';
+    }
+
+    async function handleNodeClick(clickedIndex) {
+      if (!isPlayerTurn || isPlaying || gameComplete) return;
+
+      if (clickedIndex === sequence[playerIndex]) {
+        // Correct
+        await flashNodeUser(clickedIndex);
+        playerIndex++;
+
+        if (playerIndex === sequence.length) {
+          // Round complete
+          isPlayerTurn = false;
+          currentRound++;
+          patternStatus.textContent = '▸ PATTERN MATCHED';
+          patternStatus.className = 'pattern-status success';
+
+          if (currentRound >= totalRounds) {
+            // Game complete
+            gameComplete = true;
+            patternRound.textContent = `ROUND ${currentRound} / ${totalRounds}`;
+            patternStatus.textContent = '▸ HANDSHAKE VERIFIED';
+
+            // Lock all nodes
+            patternNodes.forEach(n => n.classList.add('locked'));
+
+            // Cascade flash all nodes
+            await new Promise(r => setTimeout(r, 400));
+            for (let i = 0; i < 9; i++) {
+              flashNode(i, 200);
+              await new Promise(r => setTimeout(r, 80));
+            }
+
+            await new Promise(r => setTimeout(r, 600));
+            patternStartBtn.style.display = 'none';
+            document.getElementById('channelLocked').classList.add('revealed');
           } else {
-            thumb.classList.remove('locked');
-            fill.classList.remove('locked');
-            valueEl.classList.remove('locked');
-            labelEl.classList.remove('locked');
+            // Next round
+            patternRound.textContent = `ROUND ${currentRound} / ${totalRounds}`;
+            await new Promise(r => setTimeout(r, 1000));
+            sequence = generateSequence(sequenceLengths[currentRound]);
+            playSequence();
           }
-
-          updateSignalStrength();
         }
-
-        track.addEventListener('mousedown', (e) => {
-          dragging = true;
-          updateSlider(e.clientX);
-        });
-
-        document.addEventListener('mousemove', (e) => {
-          if (dragging) updateSlider(e.clientX);
-        });
-
-        document.addEventListener('mouseup', () => {
-          dragging = false;
-        });
-
-        // Touch support
-        track.addEventListener('touchstart', (e) => {
-          dragging = true;
-          updateSlider(e.touches[0].clientX);
-        }, { passive: true });
-
-        track.addEventListener('touchmove', (e) => {
-          if (dragging) updateSlider(e.touches[0].clientX);
-        }, { passive: true });
-
-        track.addEventListener('touchend', () => {
-          dragging = false;
-        });
-      });
-    }
-
-    function updateSignalStrength() {
-      let totalProximity = 0;
-
-      sliderConfigs.forEach(({ id, target }) => {
-        const val = sliderState[id];
-        const distance = Math.abs(val - target);
-        const proximity = Math.max(0, 1 - distance / 0.5);
-        totalProximity += proximity;
-      });
-
-      const strength = Math.round((totalProximity / 3) * 100);
-      const signalFill = document.getElementById('signalFill');
-      const signalLabel = document.getElementById('signalLabel');
-
-      signalFill.style.width = strength + '%';
-      signalLabel.textContent = `SIGNAL STRENGTH: ${strength}%`;
-
-      if (strength >= 95) {
-        signalFill.classList.add('full');
-        signalLabel.style.color = 'rgba(0, 240, 255, 0.4)';
       } else {
-        signalFill.classList.remove('full');
-        signalLabel.style.color = '';
-      }
+        // Wrong
+        isPlayerTurn = false;
+        patternStatus.textContent = '▸ PATTERN MISMATCH — RETRY';
+        patternStatus.className = 'pattern-status error';
+        await flashNodeError(clickedIndex);
 
-      // Check if all 3 are locked
-      const allLocked = sliderConfigs.every(({ id }) => sliderLocked[id]);
-      if (allLocked && !channelOpen) {
-        channelOpen = true;
-        openChannel();
+        // Glitch the whole grid
+        const grid = document.getElementById('patternGrid');
+        grid.classList.add('glitch-reveal');
+        setTimeout(() => grid.classList.remove('glitch-reveal'), 100);
+
+        // Replay same sequence
+        await new Promise(r => setTimeout(r, 1200));
+        patternStatus.className = 'pattern-status';
+        playSequence();
       }
     }
 
-    function openChannel() {
-      const channelEl = document.getElementById('channelLocked');
-      const signalLabel = document.getElementById('signalLabel');
-      const signalFill = document.getElementById('signalFill');
+    // Attach click listeners to nodes
+    patternNodes.forEach(node => {
+      node.addEventListener('click', () => {
+        const index = parseInt(node.dataset.index);
+        handleNodeClick(index);
+      });
+    });
 
-      signalFill.style.width = '100%';
-      signalFill.classList.add('full');
-      signalLabel.textContent = 'SIGNAL STRENGTH: 100% — LOCKED';
-      signalLabel.style.color = 'rgba(0, 240, 255, 0.5)';
-
-      setTimeout(() => {
-        channelEl.classList.add('revealed');
-      }, 400);
-    }
-
-    initSliders();
+    // Start button
+    patternStartBtn.addEventListener('click', () => {
+      if (isPlaying || gameComplete) return;
+      currentRound = 0;
+      sequence = generateSequence(sequenceLengths[0]);
+      patternRound.textContent = `ROUND ${currentRound} / ${totalRounds}`;
+      patternStartBtn.textContent = 'SEQUENCING...';
+      playSequence();
+    });
 
     // ─── BOOT SEQUENCE FADE-OUT ───
     setTimeout(() => {
